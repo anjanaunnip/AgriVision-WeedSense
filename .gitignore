@@ -1,0 +1,51 @@
+# ----------------------
+# Python
+# ----------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Django
+*.log
+db.sqlite3
+media/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# ----------------------
+# Node / React
+# ----------------------
+node_modules/
+dist/
+build/
+.vite/
+
+# ----------------------
+# Environment files
+# ----------------------
+.env
+.env.local
+
+# ----------------------
+# Model files (optional)
+# ----------------------
+*.pt
+*.pth
+
+# ----------------------
+# IDE
+# ----------------------
+.vscode/
+.idea/
+
+# ----------------------
+# OS
+# ----------------------
+.DS_Store
+Thumbs.db
