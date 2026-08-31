@@ -14,5 +14,5 @@ echo "Starting Gunicorn..."
 # on CPU, and the default 30s worker timeout will kill the request mid-inference.
 exec gunicorn agrivision.wsgi:application \
     --bind 0.0.0.0:8000 \
-    --workers 3 \
+    --workers 1 \
     --timeout 120
