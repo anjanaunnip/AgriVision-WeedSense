@@ -15,10 +15,6 @@ build/
 .env
 .env.local
 
-# Model weights — mounted as a volume, not baked into the image
-*.pt
-*.pth
-
 # VCS / IDE / OS
 .git/
 .vscode/
