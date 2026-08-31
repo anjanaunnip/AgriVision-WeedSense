@@ -1,1 +1,0 @@
-agrivision/ requirements.txt Dockerfile.backend Dockerfile.frontend docker-compose.yml nginx.conf entrypoint.sh best.pt .env.example DEPLOYMENT.md DEPLOY_VERCEL_STYLE.md
