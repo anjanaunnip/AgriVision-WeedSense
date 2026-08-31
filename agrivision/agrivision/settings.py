@@ -152,8 +152,15 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Restrict CORS to known origins in production via CORS_ALLOWED_ORIGINS
-# (comma-separated). Falls back to allow-all so local dev is unaffected.
-_cors_origins = os.environ.get("CORS_ALLOWED_ORIGINS", "")
+# (comma-separated env var). Falls back to a hardcoded list of known
+# frontend URLs if the env var isn't set on Render, so signup/login
+# still work even if you forget to configure it there.
+_default_cors_origins = (
+    "https://agri-vision-weed-sense-front-p302lqutc.vercel.app,"
+    "https://agri-vision-weed-sense-front-end.vercel.app"
+)
+_cors_origins = os.environ.get("CORS_ALLOWED_ORIGINS", _default_cors_origins)
+
 if _cors_origins:
     CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(",") if o.strip()]
     # Needed so the session cookie set on /login/ actually reaches the
@@ -168,6 +175,7 @@ if _cors_origins:
     CSRF_COOKIE_SAMESITE = "None"
     CSRF_COOKIE_SECURE = True
 else:
-    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOW_ALL_ORIGINS = False
+
 CORS_ALLOW_HEADERS = ["content-type"]
 CORS_ALLOW_METHODS = ["GET", "POST"]
