@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../api";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -35,8 +36,8 @@ if (password.length < 6) {
 }
 
   try {
-    const response = await fetch("/login/", {
-
+    const response = await fetch(`${API_BASE_URL}/login/`, {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",

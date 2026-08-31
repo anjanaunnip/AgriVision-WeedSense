@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { ArrowLeft, MapPin, Layers, Maximize2, ZoomIn, ZoomOut, Info } from "lucide-react";
 import { useState } from "react";
 import html2canvas from "html2canvas";
+import { API_BASE_URL } from "../api";
 
 interface Zone {
   zone_id: number;
@@ -54,7 +55,8 @@ export function GISMapPage({
 
     const mapImage = canvas.toDataURL("image/jpeg", 0.9);
 
-    const response = await fetch("http://127.0.0.1:8000/download-gis-report/", {
+    const response = await fetch(`${API_BASE_URL}/download-gis-report/`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../api";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -44,7 +45,8 @@ if (formData.password !== formData.confirmPassword) {
 
 
   try {
-    const response = await fetch("/signup/", {
+    const response = await fetch(`${API_BASE_URL}/signup/`, {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",

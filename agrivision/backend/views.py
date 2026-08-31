@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.conf import settings
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
 from .yolo_inference import run_segmentation
@@ -184,6 +184,11 @@ def login_view(request):
 
     if user is None:
         return JsonResponse({"error": "Invalid email or password"}, status=401)
+
+    # Previously authenticate() was called but login() never was, so no
+    # session was actually established — every request after "login" was
+    # still anonymous. This creates the session and sets the cookie.
+    login(request, user)
 
     return JsonResponse({"success": True})
 

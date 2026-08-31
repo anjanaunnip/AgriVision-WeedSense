@@ -2,12 +2,16 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import os
+from pathlib import Path
 from sklearn.cluster import KMeans
 
 # ---------------------------------
 # LOAD MODEL ONLY ONCE (IMPORTANT)
 # ---------------------------------
-MODEL_PATH = "D:/AgriVisionWeedSense/best.pt"
+# Defaults to <project_root>/best.pt; override with the YOLO_MODEL_PATH env
+# var (used in the Docker setup, which mounts the weights at /app/best.pt).
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+MODEL_PATH = os.environ.get("YOLO_MODEL_PATH", str(BASE_DIR / "best.pt"))
 model = YOLO(MODEL_PATH)
 
 

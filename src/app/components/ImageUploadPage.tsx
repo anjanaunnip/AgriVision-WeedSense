@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { API_BASE_URL } from "../api";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -108,7 +109,8 @@ export function ImageUploadPage({ onUpload, onLogout }: ImageUploadPageProps) {
   formData.append("field_name", fieldName);
 
   try {
-      const response = await fetch("http://127.0.0.1:8000/upload-image/", {
+      const response = await fetch(`${API_BASE_URL}/upload-image/`, {
+      credentials: "include",
       method: "POST",
       body: formData,
     });

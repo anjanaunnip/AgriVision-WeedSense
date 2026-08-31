@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../api";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import {
@@ -125,7 +126,8 @@ if (cropPercentage >= 75) {
   overlay_image: overlayImage
 };
 
-    const response = await fetch("http://127.0.0.1:8000/download-report/", {
+    const response = await fetch(`${API_BASE_URL}/download-report/`, {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

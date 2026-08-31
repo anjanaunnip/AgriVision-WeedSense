@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+agrivision/db.sqlite3
+agrivision/media/
+agrivision/staticfiles/
+
+# Node / React
+node_modules/
+dist/
+build/
+.vite/
+
+# Env & secrets
+.env
+.env.local
+
+# Model weights — mounted as a volume, not baked into the image
+*.pt
+*.pth
+
+# VCS / IDE / OS
+.git/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

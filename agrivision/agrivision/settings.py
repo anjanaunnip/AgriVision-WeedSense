@@ -20,12 +20,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wb0b02d)h4n+9)&$5s&9f96he5bxnwx!y^1f4^)(1ca0xt4_9v'
+# Falls back to the original dev key only when SECRET_KEY isn't set, so local
+# `runserver` usage still works without a .env file.
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-wb0b02d)h4n+9)&$5s&9f96he5bxnwx!y^1f4^)(1ca0xt4_9v",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if h.strip()
+]
 
 
 # Application definition
@@ -76,12 +85,24 @@ WSGI_APPLICATION = 'agrivision.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get("POSTGRES_DB"):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ["POSTGRES_DB"],
+            'USER': os.environ.get("POSTGRES_USER", "postgres"),
+            'PASSWORD': os.environ.get("POSTGRES_PASSWORD", ""),
+            'HOST': os.environ.get("POSTGRES_HOST", "db"),
+            'PORT': os.environ.get("POSTGRES_PORT", "5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -119,6 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -128,6 +150,24 @@ import os
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-CORS_ALLOW_ALL_ORIGINS = True
+
+# Restrict CORS to known origins in production via CORS_ALLOWED_ORIGINS
+# (comma-separated). Falls back to allow-all so local dev is unaffected.
+_cors_origins = os.environ.get("CORS_ALLOWED_ORIGINS", "")
+if _cors_origins:
+    CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(",") if o.strip()]
+    # Needed so the session cookie set on /login/ actually reaches the
+    # browser when frontend and backend are on different domains (e.g.
+    # Vercel + Render) — the frontend's fetch calls send credentials:
+    # "include" to match. CORS_ALLOW_ALL_ORIGINS can't be combined with
+    # credentials, which is why this branch only runs once real origins
+    # are configured.
+    CORS_ALLOW_CREDENTIALS = True
+    SESSION_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_SECURE = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ["content-type"]
 CORS_ALLOW_METHODS = ["GET", "POST"]
