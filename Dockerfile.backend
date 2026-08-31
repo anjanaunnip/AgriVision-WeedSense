@@ -15,18 +15,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY requirements.txt .
 
-# NOTE: requirements.txt pins torch==2.10.0 / torchvision==0.25.0. Installing
-# straight from PyPI pulls the default CUDA-enabled wheels, which are several
-# GB. If this is deploying to a CPU-only host, install torch/torchvision from
-# the PyTorch CPU wheel index first (uncomment below), THEN the rest of
-# requirements.txt so pip doesn't re-resolve them from PyPI.
-# RUN pip install --no-cache-dir torch==2.10.0 torchvision==0.25.0 \
-#       --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY agrivision/ ./agrivision/
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
+
+# Bake the model weights into the image.
+COPY best.pt ./best.pt
 
 WORKDIR /app/agrivision
 EXPOSE 8000
