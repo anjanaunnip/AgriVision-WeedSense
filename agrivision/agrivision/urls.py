@@ -16,8 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("backend.urls")),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# The + static(...) part serves files under MEDIA_ROOT (uploaded images,
+# generated NDVI/overlay images) at MEDIA_URL ("/media/..."). Without this,
+# nothing serves those files at all, DEBUG setting or not — Django doesn't
+# do this automatically. Normally you'd gate this behind `if settings.DEBUG`
+# and use a real static file server (nginx, S3, etc.) in production, but
+# this deployment has no separate media server, so it's added unconditionally.
