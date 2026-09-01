@@ -126,7 +126,7 @@ export function ImageUploadPage({ onUpload, onLogout }: ImageUploadPageProps) {
     // FIXED — USING BACKEND original_image
 
 onUpload(
-  "http://127.0.0.1:8000" + data.overlay_image,
+  API_BASE_URL + data.overlay_image,
   fieldName,
   data.weed_percentage,
   data.crop_percentage,
@@ -136,8 +136,8 @@ onUpload(
   data.reliability_score,
   data.recommendation,
   data.zones || [],
-  "http://127.0.0.1:8000" + data.ndvi_image,
-  "http://127.0.0.1:8000" + data.original_image,   // ✅ FIXED
+  API_BASE_URL + data.ndvi_image,
+  API_BASE_URL + data.original_image,
   data.image_width,
   data.image_height
 );
