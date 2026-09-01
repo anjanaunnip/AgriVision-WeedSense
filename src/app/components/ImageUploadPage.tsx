@@ -45,6 +45,7 @@ export function ImageUploadPage({ onUpload, onLogout }: ImageUploadPageProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fieldName, setFieldName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (file: File) => {
@@ -108,6 +109,8 @@ export function ImageUploadPage({ onUpload, onLogout }: ImageUploadPageProps) {
   formData.append("file", selectedFile);
   formData.append("field_name", fieldName);
 
+  setIsAnalyzing(true);
+
   try {
       const response = await fetch(`${API_BASE_URL}/upload-image/`, {
       credentials: "include",
@@ -146,6 +149,8 @@ onUpload(
 
   } catch (error) {
     alert("Server error during image upload");
+  } finally {
+    setIsAnalyzing(false);
   }
 };
 
@@ -278,12 +283,21 @@ onUpload(
           {/* Submit Button */}
           <Button
             onClick={handleSubmit}
-            disabled={!selectedFile}
+            disabled={!selectedFile || isAnalyzing}
             className="w-full mt-6 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold py-5 text-base shadow-xl disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
           >
             <Upload className="w-4 h-4 mr-2" />
-            Start Weed Detection Analysis
+            {isAnalyzing ? "Analyzing..." : "Start Weed Detection Analysis"}
           </Button>
+
+          {isAnalyzing && (
+            <div className="mt-4 flex items-center gap-3 rounded-lg border-2 border-amber-200 bg-amber-50 p-4">
+              <div className="h-5 w-5 flex-shrink-0 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
+              <p className="text-sm font-medium text-amber-800">
+                Please wait, this can take up to a minute or two — the AI model is analyzing your image.
+              </p>
+            </div>
+          )}
         </Card>
 
         {/* Preview & Information Section */}
