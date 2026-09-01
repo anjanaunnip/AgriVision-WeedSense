@@ -14,15 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+# from django.contrib import admin
+# from django.urls import path, include
+# from django.conf import settings
+# from django.conf.urls.static import static
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("backend.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns = [
+#     path("admin/", admin.site.urls),
+#     path("", include("backend.urls")),
+# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+from django.contrib import admin 
+from django.urls import path, re_path, include 
+from django.conf import settings 
+from django.views.static import serve 
+urlpatterns = [ path("admin/", admin.site.urls), path("", include("backend.urls")), re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}), ]
 # The + static(...) part serves files under MEDIA_ROOT (uploaded images,
 # generated NDVI/overlay images) at MEDIA_URL ("/media/..."). Without this,
 # nothing serves those files at all, DEBUG setting or not — Django doesn't
